@@ -21,10 +21,12 @@ public class AddEditContact extends AppCompatActivity {
     private FloatingActionButton fab;
 
     // String variables
-    String name, company, phone, email, note;
+    private String name, company, phone, email, note;
 
     // Action bar
-    ActionBar actionBar;
+    private ActionBar actionBar;
+
+    private DbHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,9 @@ public class AddEditContact extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // init db
+        dbHelper = new DbHelper(this);
 
         // init action bar
         actionBar = getSupportActionBar();
@@ -71,10 +76,15 @@ public class AddEditContact extends AppCompatActivity {
         email = emailEt.getText().toString();
         note = noteEt.getText().toString();
 
+        String timeStamp = ""+System.currentTimeMillis();
+
         // info on any 1 field saves contact
         if (!name.isEmpty() || !company.isEmpty() || !phone.isEmpty() || !email.isEmpty() || !note.isEmpty()) {
-            // save data
-            Toast.makeText(this, getString(R.string.contact_saved), Toast.LENGTH_SHORT).show();
+
+            long id = dbHelper.insertContact(name, company, phone, email, note, timeStamp, timeStamp);
+
+            Toast.makeText(this, getString(R.string.contact_saved) + ": " + id, Toast.LENGTH_SHORT).show();
+            finish();
         } else {
             Toast.makeText(this, getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
         }
