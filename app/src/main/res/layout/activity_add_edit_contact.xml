@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddEditContact"
+    android:background="@color/colorSecondary"
+    >
+
+    <!-- Layout vertical for contact info to add -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:padding="25dp" >
+
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:src="@drawable/outline_account_circle_24"
+            app:tint="@color/white"
+            android:layout_margin="20dp"/>
+
+        <!-- Edit Text for Name -->
+        <EditText
+            android:id="@+id/nameEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/white"
+            android:background="@drawable/field_background"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+
+            android:drawableStart="@drawable/name_input"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+
+
+            />
+
+        <!-- Edit Text for Company -->
+        <EditText
+            android:id="@+id/companyEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/company"
+            android:inputType="textLongMessage"
+            android:textColorHint="@color/white"
+            android:background="@drawable/field_background"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+
+            android:drawableStart="@drawable/company_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            />
+
+        <!-- Edit Text for Phone Number -->
+        <EditText
+            android:id="@+id/phoneEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/phone_number"
+            android:inputType="phone"
+            android:textColorHint="@color/white"
+            android:background="@drawable/field_background"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+
+            android:drawableStart="@drawable/baseline_phone_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            />
+
+        <!-- Edit Text for Email -->
+        <EditText
+            android:id="@+id/emailEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/white"
+            android:background="@drawable/field_background"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+
+            android:drawableStart="@drawable/baseline_email_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            />
+
+        <!-- Note -->
+        <EditText
+            android:id="@+id/noteEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/note"
+            android:inputType="textLongMessage"
+            android:textColorHint="@color/white"
+            android:background="@drawable/field_background"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+
+            android:drawableStart="@drawable/baseline_note_24"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            />
+
+    </LinearLayout>
+
+
+    <!-- FAB button send contact data to database -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/outline_check_24"
+        app:tint="@color/white"
+        android:elevation="5dp"
+
+        android:backgroundTint="@color/colorTextPrimary"
+
+    />
+
+</RelativeLayout>
