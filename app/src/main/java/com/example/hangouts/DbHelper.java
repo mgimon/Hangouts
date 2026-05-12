@@ -2,10 +2,14 @@ package com.example.hangouts;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // OpenHelper Android class for SQLite CRUD
 public class DbHelper extends SQLiteOpenHelper {
@@ -47,5 +51,37 @@ public class DbHelper extends SQLiteOpenHelper {
         long id = db.insert(Constants.TABLE_NAME, null, contentValues); // returns C_ID of contact (primary key) if successful
         db.close();
         return id;
+    }
+
+    public List<Contact> getAllContacts() {
+
+        List<Contact> contactList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME, null);
+
+        if (cursor.moveToFirst()) {
+
+            while (!cursor.isAfterLast()) {
+
+                Contact contact = new Contact(
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_COMPANY)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_PHONE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_EMAIL)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NOTE))
+                );
+
+                contactList.add(contact);
+
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        db.close();
+
+        return contactList;
     }
 }

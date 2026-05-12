@@ -8,8 +8,45 @@
     tools:context=".MainActivity"
     android:background="@color/colorSecondary" >
 
-    <!-- FAB button add contact -->
+    <!-- Header 42 -->
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@color/colorSecondary">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/logo42_foreground"
+            android:contentDescription="42 logo"
+            app:tint="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hangouts"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:layout_marginStart="-10dp"
+            android:fontFamily="@font/futura_hf"/>
+    </LinearLayout>
+
+    <!-- List RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fab"
+        android:padding="8dp"/>
+
+    <!-- FAB button add contact -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
 
         android:id="@+id/fab"

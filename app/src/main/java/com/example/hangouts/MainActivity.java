@@ -1,5 +1,8 @@
 package com.example.hangouts;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +18,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
+    private RecyclerView recyclerView;
+    private ContactAdapter adapter;
+    private DbHelper dbHelper;
+    private List<Contact> contactList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,20 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // init db
+        dbHelper = new DbHelper(this);
+
+        // recycler view
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // load data
+        contactList = dbHelper.getAllContacts();
+
+        // adapter
+        adapter = new ContactAdapter(contactList);
+        recyclerView.setAdapter(adapter);
+
         // Get button from View
         fab = findViewById(R.id.fab);
 
@@ -45,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        contactList = dbHelper.getAllContacts();
+
+        adapter = new ContactAdapter(contactList);
+        recyclerView.setAdapter(adapter);
     }
 
 }
