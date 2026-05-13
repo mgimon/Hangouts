@@ -1,5 +1,6 @@
 package com.example.hangouts;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.contact_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item, parent, false);
 
         return new ContactViewHolder(view);
     }
@@ -41,6 +41,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Contact contact = contactList.get(position);
         holder.nameTv.setText(contact.getName());
+
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(v.getContext(), ContactView.class);
+
+            intent.putExtra("contact_id", contactList.get(position).getId());
+
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override

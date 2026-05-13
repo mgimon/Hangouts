@@ -84,4 +84,28 @@ public class DbHelper extends SQLiteOpenHelper {
 
         return contactList;
     }
+
+    public Contact getContactById(int contactId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME + " WHERE ID = ?", new String[]{String.valueOf(contactId)});
+
+        if (cursor.moveToFirst()) {
+
+            Contact contact = new Contact(
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_COMPANY)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_PHONE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NOTE))
+            );
+            cursor.close();
+            db.close();
+            return contact;
+        }
+        cursor.close();
+        db.close();
+        return null;
+    }
 }

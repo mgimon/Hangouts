@@ -4,7 +4,7 @@ public class Constants {
 
     // db name
     public static final String DATABASE_NAME = "CONTACT_DB";
-    public static final int DATABASE_VERSION =2;
+    public static final int DATABASE_VERSION =5;
 
     // table name
     public static final String TABLE_NAME = "CONTACT_TABLE";

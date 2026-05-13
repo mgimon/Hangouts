@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
+    private LinearLayout emptyView;
     private ContactAdapter adapter;
     private DbHelper dbHelper;
     private List<Contact> contactList;
@@ -73,9 +75,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         contactList = dbHelper.getAllContacts();
+        emptyView = findViewById(R.id.emptyView);
 
-        adapter = new ContactAdapter(contactList);
-        recyclerView.setAdapter(adapter);
+        if (!contactList.isEmpty()) {
+            emptyView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            adapter = new ContactAdapter(contactList);
+            recyclerView.setAdapter(adapter);
+        } else {
+            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+
     }
 
 }

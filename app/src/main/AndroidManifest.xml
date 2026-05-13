@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hangouts">
         <activity
+            android:name=".ContactView"
+            android:exported="false" />
+        <activity
             android:name=".AddEditContact"
             android:exported="false" />
         <activity
