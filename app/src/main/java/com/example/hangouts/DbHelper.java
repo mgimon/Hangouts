@@ -65,7 +65,7 @@ public class DbHelper extends SQLiteOpenHelper {
             while (!cursor.isAfterLast()) {
 
                 Contact contact = new Contact(
-                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NAME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_COMPANY)),
                         cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_PHONE)),
@@ -88,12 +88,13 @@ public class DbHelper extends SQLiteOpenHelper {
     public Contact getContactById(int contactId) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME + " WHERE ID = ?", new String[]{String.valueOf(contactId)});
+        //Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME + " WHERE ID = ?", new String[]{String.valueOf(contactId)});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME + " WHERE " + Constants.C_ID + " = ?", new String[]{String.valueOf(contactId)});
 
         if (cursor.moveToFirst()) {
 
             Contact contact = new Contact(
-                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_ID)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NAME)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_COMPANY)),
                     cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_PHONE)),

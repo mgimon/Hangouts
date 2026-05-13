@@ -43,11 +43,15 @@ public class ContactView extends AppCompatActivity {
         dbHelper = new DbHelper(this);
 
         Contact contact = dbHelper.getContactById(getIntent().getIntExtra("contact_id", -1));
+        if (contact == null) {
+            finish();
+            return;
+        }
 
         // init action bar
         actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(R.string.add_contact);
+            actionBar.setTitle(R.string.contact);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
