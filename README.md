@@ -1,10 +1,8 @@
 # About ft_Hangouts
 
-Hangouts is an Android project focused on learning the basics of native mobile development with the Android SDK in Java.
+Hangouts is an Android project developed in Java, focused on learning the basics of native mobile development with the Android SDK.
 
-The application allows users to create, edit, and delete contacts, exchange text messages, and store all data persistently using SQLite.
-
-The project also introduces key Android concepts such as the Activity Lifecycle, multilingual support, responsive layouts, and UI customization.
+This application allows users to exchange text messages, storing all data persistently using SQLite, and create, edit, and delete contacts. The project introduces key Android concepts such as the Activity Lifecycle, multilingual support, responsive layouts, and UI customization.
 
 <br>
 
