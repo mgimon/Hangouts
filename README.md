@@ -8,7 +8,7 @@ The project also introduces key Android concepts such as the Activity Lifecycle,
 
 <br>
 
-## ✅ Requirements
+## 🟠 Requirements
 
 * Contacts must contain at least 5 fields.
 * Use SQLite for persistence.
@@ -18,7 +18,7 @@ The project also introduces key Android concepts such as the Activity Lifecycle,
 
 <br>
 
-## 🛠️ Technologies
+## 🟠 Technologies
 
 * Android SDK
 * Java / Kotlin
