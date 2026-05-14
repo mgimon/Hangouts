@@ -10,7 +10,7 @@ This application allows users to exchange text messages, storing all data persis
 
 * CRUD Contacts, SQLite for persistence.
 * Message exchange functionality with conversation history.
-* App supports both landscape and portrait modes.
+* App supports both landscape/portrait modes and two languages.
 * App behaves smoothly and is consistent even in background.
 * No external libraries allowed.
 
