@@ -6,16 +6,6 @@ This application allows users to exchange text messages, storing all data persis
 
 <br>
 
-## 🟠 Requirements
-
-* CRUD Contacts, SQLite for persistence.
-* Message exchange functionality with conversation history.
-* App supports both landscape/portrait modes and two languages.
-* App behaves smoothly and is consistent even in background.
-* No external libraries allowed.
-
-<br>
-
 ## 🟠 Technologies
 
 * Java / Kotlin
@@ -24,17 +14,13 @@ This application allows users to exchange text messages, storing all data persis
 
 <br>
 
-## 🟠 Features
+## 🟠 Requirements
 
-| Feature       | Description                        |
-| :------------ | :--------------------------------- |
-| Contacts      | Create, edit, and delete contacts  |
-| SQLite        | Persistent local database          |
-| Messaging     | Send and receive messages          |
-| Multilanguage | Supports two different languages   |
-| Toast         | Displays last background timestamp |
-| UI            | Change header color from the menu  |
-| Responsive    | Supports portrait and landscape    |
+* CRUD Contacts, SQLite for persistence.
+* Message exchange functionality with conversation history.
+* App supports both landscape/portrait modes and two languages.
+* App behaves smoothly and is consistent even in background.
+* No external libraries allowed.
 
 <br>
 
