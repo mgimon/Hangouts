@@ -8,20 +8,19 @@ This application allows users to exchange text messages, storing all data persis
 
 ## 🟠 Requirements
 
-* Contacts must contain at least 5 fields.
-* Use SQLite for persistence.
-* Do not use Android's shared contacts table.
+* CRUD Contacts, SQLite for persistence.
+* Message exchange functionality with conversation history.
+* App supports both landscape and portrait modes.
+* App behaves smoothly and is consistent even in background.
 * No external libraries allowed.
-* App icon must be the 42 logo.
 
 <br>
 
 ## 🟠 Technologies
 
-* Android SDK
 * Java / Kotlin
 * SQLite
-* Android Studio
+* Android SDK
 
 <br>
 
