@@ -109,4 +109,41 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close();
         return null;
     }
+
+    public int updateContact(int id, String name, String company, String phone, String email, String note, String updatedTime) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Constants.C_NAME, name);
+        contentValues.put(Constants.C_COMPANY, company);
+        contentValues.put(Constants.C_PHONE, phone);
+        contentValues.put(Constants.C_EMAIL, email);
+        contentValues.put(Constants.C_NOTE, note);
+        contentValues.put(Constants.C_UPDATED_TIME, updatedTime);
+
+        int result = db.update(
+                Constants.TABLE_NAME,
+                contentValues,
+                Constants.C_ID + "=?",
+                new String[]{String.valueOf(id)}
+        );
+
+        db.close();
+        return result; // n rows affected
+    }
+
+    public int deleteContact(int id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int result = db.delete(
+                Constants.TABLE_NAME,
+                Constants.C_ID + "=?",
+                new String[]{String.valueOf(id)}
+        );
+
+        db.close();
+        return result; // n rows affected
+    }
 }

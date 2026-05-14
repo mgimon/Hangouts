@@ -1,7 +1,10 @@
 package com.example.hangouts;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // load data
-        contactList = dbHelper.getAllContacts();
+        //contactList = dbHelper.getAllContacts();
+        contactList = new ArrayList<>();
+        contactList.addAll(dbHelper.getAllContacts());
 
         // adapter
         adapter = new ContactAdapter(contactList);
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+/*    @Override
     protected void onResume() {
         super.onResume();
 
@@ -86,7 +91,26 @@ public class MainActivity extends AppCompatActivity {
             emptyView.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
+    }*/
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        emptyView = findViewById(R.id.emptyView);
+
+        contactList.clear();
+        contactList.addAll(dbHelper.getAllContacts());
+
+        if (contactList.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
 }
