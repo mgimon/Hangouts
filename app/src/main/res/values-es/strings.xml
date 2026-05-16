@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Hangouts</string>
+    <string name="name">Nombre</string>
+    <string name="company">Empresa</string>
+    <string name="phone_number">Numero de telefono</string>
+    <string name="email">Correo electronico</string>
+    <string name="note">Nota</string>
+
+    <string name="nothing_to_save">Nada que guardar</string>
+    <string name="contact_saved">Contacto guardado</string>
+    <string name="add_contact">Añadir contacto</string>
+    <string name="edit">Editar</string>
+    <string name="contact">Contacto</string>
+    <string name="no_contacts">Todavia no hay contactos</string>
+    <string name="message">Mensaje…</string>
+    <string name="delete">Eliminar</string>
+    <string name="sure_delete">¿Seguro que quieres eliminar este contacto?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+</resources>

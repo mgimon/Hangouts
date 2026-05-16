@@ -15,16 +15,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class AddEditContact extends AppCompatActivity {
+public class AddEditContact extends BaseActivity {
 
     private EditText nameEt, companyEt, phoneEt, emailEt, noteEt;
     private FloatingActionButton fab;
 
     // String variables
     private String name, company, phone, email, note;
-
-    // Action bar
-    private ActionBar actionBar;
 
     private DbHelper dbHelper;
 
@@ -42,13 +39,6 @@ public class AddEditContact extends AppCompatActivity {
         // init db
         dbHelper = new DbHelper(this);
 
-        // init action bar
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.add_contact);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
 
         // get data from view
         nameEt = findViewById(R.id.nameEt);
@@ -88,12 +78,5 @@ public class AddEditContact extends AppCompatActivity {
         } else {
             Toast.makeText(this, getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    // handle back button in action bar
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish(); // close Activity
-        return true;
     }
 }

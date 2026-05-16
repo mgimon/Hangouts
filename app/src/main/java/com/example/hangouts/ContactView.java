@@ -1,9 +1,11 @@
 package com.example.hangouts;
 
-import android.content.Intent;
+
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.ImageButton;
+
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.EditText;
@@ -16,20 +18,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class ContactView extends AppCompatActivity {
+public class ContactView extends BaseActivity {
 
-    private ActionBar actionBar;
     private DbHelper dbHelper;
     private FloatingActionButton deletefab, editfab;
     private ImageButton sendButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_contact_view);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -44,14 +44,6 @@ public class ContactView extends AppCompatActivity {
         if (contact == null) {
             finish();
             return;
-        }
-
-        // init action bar
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.contact);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
         }
 
         // fill view with contact data
@@ -157,10 +149,4 @@ public class ContactView extends AppCompatActivity {
         });
     }
 
-    // handle back button in action bar
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish(); // close Activity
-        return true;
-    }
 }
