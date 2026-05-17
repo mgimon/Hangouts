@@ -17,4 +17,7 @@
     <string name="sure_delete">Are you sure you want to delete this contact?</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="header">Header</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
 </resources>

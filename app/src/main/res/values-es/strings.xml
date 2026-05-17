@@ -17,4 +17,7 @@
     <string name="sure_delete">¿Seguro que quieres eliminar este contacto?</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Guardar</string>
+    <string name="header">Cabecera</string>
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
 </resources>

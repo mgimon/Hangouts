@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
-        android:id="@+id/toggle_color"
-        android:title=""
-        app:showAsAction="always"
-        app:actionLayout="@layout/menu_switch" />
-
+        android:id="@+id/action_change_color"
+        android:title="Color"
+        android:icon="@drawable/baseline_settings_24"
+        app:showAsAction="always" />
 </menu>

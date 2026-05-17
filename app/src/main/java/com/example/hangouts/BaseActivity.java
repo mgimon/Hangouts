@@ -1,5 +1,6 @@
 package com.example.hangouts;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.View;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -26,33 +28,59 @@ public class BaseActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
+
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        int color = prefs.getInt("actionbar_color", -1);
+
+        if (color != -1 && actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.header_menu, menu);
-
-        MenuItem item = menu.findItem(R.id.toggle_color);
-
-        View view = item.getActionView();
-
-        switchColor = view.findViewById(R.id.switchColor);
-
-        switchColor.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-            if (actionBar == null)
-                return;
-
-            if (isChecked)
-                actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary, null)));
-            else
-                actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorSecondary, null)));
-
-        });
-
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_change_color) {
+
+            SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+
+
+            if (actionBar != null) {
+
+                new androidx.appcompat.app.AlertDialog.Builder(BaseActivity.this)
+                        .setTitle(R.string.header)
+                        .setSingleChoiceItems(new String[]{getString(R.string.light), getString(R.string.dark)}, -1, (dialog, which) -> {
+                            if (which == 0) {
+                                int color = ContextCompat.getColor(this, R.color.colorSecondary);
+                                actionBar.setBackgroundDrawable(new ColorDrawable(color));
+                                editor.putInt("actionbar_color", color);
+                            } else if (which == 1) {
+                                int color = ContextCompat.getColor(this, R.color.colorPrimary);
+                                actionBar.setBackgroundDrawable(new ColorDrawable(color));
+                                editor.putInt("actionbar_color", color);
+                            }
+                            editor.apply();
+                        })
+                        .setNegativeButton(R.string.save, (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+
+            }
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     // handle back button in action bar
     @Override
