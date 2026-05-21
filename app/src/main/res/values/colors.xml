@@ -9,4 +9,7 @@
     <color name="colorTextSecondary">#CBD5ED</color>
     <color name="colorThemeExtra">#FF5252</color>
 
+    <color name="colorMessageSent">#4DD6C1</color>
+    <color name="colorMessageReceived">#2d3e52</color>
+
 </resources>

@@ -3,6 +3,7 @@ package com.example.hangouts;
 
 import android.os.Bundle;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -12,8 +13,6 @@ import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,6 +25,50 @@ public class ContactView extends BaseActivity {
     private DbHelper dbHelper;
     private FloatingActionButton deletefab, editfab;
     private ImageButton sendButton;
+
+    private void loadMessages(int contactId) {
+
+        LinearLayout board = findViewById(R.id.messageBoard);
+        board.removeAllViews();
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        for (Message msg : dbHelper.getAllMessagesByContactId(contactId)) {
+
+            View bubble;
+
+            if (msg.getIsSent() == 1) {
+                bubble = inflater.inflate(R.layout.message_item_sent, board, false);
+            } else {
+                bubble = inflater.inflate(R.layout.message_item_received, board, false);
+            }
+
+
+
+            TextView text = bubble.findViewById(R.id.messageText);
+            TextView time = bubble.findViewById(R.id.messageTime);
+            text.setText(msg.getMsg());
+            time.setText(msg.getTimestamp().substring(11)); // crop date
+
+            LinearLayout container = bubble.findViewById(R.id.messageContainer);
+
+            LinearLayout.LayoutParams params =
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            if (msg.getIsSent() == 1) {
+                params.gravity = android.view.Gravity.END;
+            } else {
+                params.gravity = android.view.Gravity.START;
+            }
+
+            bubble.setLayoutParams(params);
+
+            board.addView(bubble);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +182,8 @@ public class ContactView extends BaseActivity {
                         .show();
             }
         });
+
+        loadMessages(contact.getId());
 
         // handle back button of device
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

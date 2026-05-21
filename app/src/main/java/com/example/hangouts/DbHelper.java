@@ -21,7 +21,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         // create
-        db.execSQL(Constants.CREATE_TABLE);
+        db.execSQL(Constants.CREATE_CONTACT_TABLE);
+        db.execSQL(Constants.CREATE_MSG_TABLE);
     }
 
     @Override
@@ -30,9 +31,15 @@ public class DbHelper extends SQLiteOpenHelper {
         // upgrade
 
         // drop if exists
-        db.execSQL("DROP TABLE IF EXISTS " + Constants.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Constants.CONTACT_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + Constants.MSG_TABLE);
         onCreate(db);
     }
+
+
+
+    /// ************** CONTACTS ************** ///
+
 
     public long insertContact(String name, String company, String phone, String email, String note, String addedTime, String updatedTime) {
 
@@ -48,7 +55,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(Constants.C_ADDED_TIME, addedTime);
         contentValues.put(Constants.C_UPDATED_TIME, updatedTime);
 
-        long id = db.insert(Constants.TABLE_NAME, null, contentValues); // returns C_ID of contact (primary key) if successful
+        long id = db.insert(Constants.CONTACT_TABLE, null, contentValues); // returns C_ID of contact (primary key) if successful
         db.close();
         return id;
     }
@@ -58,7 +65,7 @@ public class DbHelper extends SQLiteOpenHelper {
         List<Contact> contactList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.CONTACT_TABLE, null);
 
         if (cursor.moveToFirst()) {
 
@@ -88,8 +95,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public Contact getContactById(int contactId) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        //Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME + " WHERE ID = ?", new String[]{String.valueOf(contactId)});
-        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.TABLE_NAME + " WHERE " + Constants.C_ID + " = ?", new String[]{String.valueOf(contactId)});
+        //Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.CONTACT_TABLE + " WHERE ID = ?", new String[]{String.valueOf(contactId)});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.CONTACT_TABLE + " WHERE " + Constants.C_ID + " = ?", new String[]{String.valueOf(contactId)});
 
         if (cursor.moveToFirst()) {
 
@@ -123,7 +130,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(Constants.C_UPDATED_TIME, updatedTime);
 
         int result = db.update(
-                Constants.TABLE_NAME,
+                Constants.CONTACT_TABLE,
                 contentValues,
                 Constants.C_ID + "=?",
                 new String[]{String.valueOf(id)}
@@ -138,12 +145,97 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         int result = db.delete(
-                Constants.TABLE_NAME,
+                Constants.CONTACT_TABLE,
                 Constants.C_ID + "=?",
                 new String[]{String.valueOf(id)}
         );
 
         db.close();
         return result; // n rows affected
+    }
+
+
+    /// ************** MESSAGES ************** ///
+
+
+    public long insertMessage(int contactId, String msg, int isSent, String timestamp) {
+
+        SQLiteDatabase db = this.getWritableDatabase(); // auto updates db if changes (calling onUpgrade, onCreate)
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(Constants.C_MSG_CONTACT_ID, contactId);
+        contentValues.put(Constants.C_MSG, msg);
+        contentValues.put(Constants.C_MSG_IS_SENT, isSent);
+        contentValues.put(Constants.C_MSG_TIMESTAMP, timestamp);
+
+        long id = db.insert(Constants.MSG_TABLE, null, contentValues); // returns C_MSG_ID (primary key) if successful
+
+        db.close();
+        return id;
+    }
+
+    public Message getMessageById(int messageId) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + Constants.MSG_TABLE +
+                        " WHERE " + Constants.C_MSG_ID + " = ?",
+                new String[]{String.valueOf(messageId)}
+        );
+
+        if (cursor.moveToFirst()) {
+
+            Message message = new Message(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_MSG_ID)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_MSG_CONTACT_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_MSG)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_MSG_IS_SENT)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_MSG_TIMESTAMP))
+            );
+
+            cursor.close();
+            db.close();
+            return message;
+        }
+
+        cursor.close();
+        db.close();
+        return null;
+    }
+
+    public List<Message> getAllMessagesByContactId(int contactId) {
+
+        List<Message> messageList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + Constants.MSG_TABLE +
+                        " WHERE " + Constants.C_MSG_CONTACT_ID + " = ?",
+                new String[]{String.valueOf(contactId)}
+        );
+
+        if (cursor.moveToFirst()) {
+
+            while (!cursor.isAfterLast()) {
+
+                Message message = new Message(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_MSG_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_MSG_CONTACT_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_MSG)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_MSG_IS_SENT)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_MSG_TIMESTAMP))
+                );
+
+                messageList.add(message);
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        db.close();
+
+        return messageList;
     }
 }
