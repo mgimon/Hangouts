@@ -30,6 +30,7 @@ public class ContactView extends BaseActivity {
 
         LinearLayout board = findViewById(R.id.messageBoard);
         board.removeAllViews();
+        long timeMillis;
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -44,14 +45,18 @@ public class ContactView extends BaseActivity {
             }
 
 
-
             TextView text = bubble.findViewById(R.id.messageText);
             TextView time = bubble.findViewById(R.id.messageTime);
+
+            // Tv set text
             text.setText(msg.getMsg());
-            time.setText(msg.getTimestamp().substring(11)); // crop date
+            // Tv set time
+            timeMillis = Long.parseLong(msg.getTimestamp());
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+            String formattedTime = sdf.format(new java.util.Date(timeMillis));
+            time.setText(formattedTime);
 
             LinearLayout container = bubble.findViewById(R.id.messageContainer);
-
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,

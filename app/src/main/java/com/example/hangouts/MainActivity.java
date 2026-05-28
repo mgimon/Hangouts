@@ -1,12 +1,18 @@
 package com.example.hangouts;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -39,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS}, 1);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -75,7 +84,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-/*    @Override
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {}
+    }
+
+    /*@Override
     protected void onResume() {
         super.onResume();
 
@@ -97,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        syncSmsToDb();
+
         emptyView = findViewById(R.id.emptyView);
 
         contactList.clear();
@@ -111,6 +129,47 @@ public class MainActivity extends AppCompatActivity {
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    private void syncSmsToDb() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Cursor cursor = getContentResolver().query(
+                Uri.parse("content://sms/inbox"),
+                null,
+                null,
+                null,
+                "date DESC"
+        );
+
+        if (cursor == null) return;
+
+        while (cursor.moveToNext()) {
+
+            String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
+            String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+            long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
+            String smsId = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
+
+            Contact contact = dbHelper.getContactByPhone(address);
+
+            if (contact != null) {
+
+                dbHelper.insertMessage(
+                        contact.getId(),
+                        body,
+                        0,
+                        String.valueOf(date),
+                        smsId
+                );
+            }
+        }
+
+        cursor.close();
     }
 
 }

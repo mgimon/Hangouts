@@ -4,7 +4,7 @@ public class Constants {
 
     // db name
     public static final String DATABASE_NAME = "CONTACT_DB";
-    public static final int DATABASE_VERSION =5;
+    public static final int DATABASE_VERSION =6;
 
     // CONTACT
     public static final String CONTACT_TABLE = "CONTACT_TABLE";
@@ -25,6 +25,7 @@ public class Constants {
         public static final String C_MSG = "MSG";
         public static final String C_MSG_IS_SENT = "IS_SENT";
         public static final String C_MSG_TIMESTAMP = "TIMESTAMP";
+        public static final String C_MSG_EXTERNAL_ID = "SMS_ID"; // avoids external insertion of duplicate SMS
 
 
 
@@ -45,6 +46,7 @@ public class Constants {
             + C_MSG_CONTACT_ID + " INTEGER, "
             + C_MSG + " TEXT, "
             + C_MSG_IS_SENT + " INTEGER, "
-            + C_MSG_TIMESTAMP + " TEXT "
+            + C_MSG_TIMESTAMP + " TEXT, "
+            + C_MSG_EXTERNAL_ID + " TEXT UNIQUE "
             + " );";
 }

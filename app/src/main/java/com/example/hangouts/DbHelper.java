@@ -117,6 +117,38 @@ public class DbHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public Contact getContactByPhone(String phone) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + Constants.CONTACT_TABLE +
+                        " WHERE " + Constants.C_PHONE + " = ?",
+                new String[]{phone}
+        );
+
+        if (cursor.moveToFirst()) {
+
+            Contact contact = new Contact(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(Constants.C_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_COMPANY)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_PHONE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(Constants.C_NOTE))
+            );
+
+            cursor.close();
+            db.close();
+            return contact;
+        }
+
+        cursor.close();
+        db.close();
+
+        return null;
+    }
+
     public int updateContact(int id, String name, String company, String phone, String email, String note, String updatedTime) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -158,7 +190,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /// ************** MESSAGES ************** ///
 
 
-    public long insertMessage(int contactId, String msg, int isSent, String timestamp) {
+    public long insertMessage(int contactId, String msg, int isSent, String timestamp, String externalId) {
 
         SQLiteDatabase db = this.getWritableDatabase(); // auto updates db if changes (calling onUpgrade, onCreate)
 
@@ -168,8 +200,9 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(Constants.C_MSG, msg);
         contentValues.put(Constants.C_MSG_IS_SENT, isSent);
         contentValues.put(Constants.C_MSG_TIMESTAMP, timestamp);
+        contentValues.put(Constants.C_MSG_EXTERNAL_ID, externalId);
 
-        long id = db.insert(Constants.MSG_TABLE, null, contentValues); // returns C_MSG_ID (primary key) if successful
+        long id = db.insertWithOnConflict(Constants.MSG_TABLE, null, contentValues, SQLiteDatabase.CONFLICT_IGNORE); // returns C_MSG_ID (primary key) if successful
 
         db.close();
         return id;
