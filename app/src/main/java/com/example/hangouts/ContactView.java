@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,45 +31,34 @@ public class ContactView extends BaseActivity {
     private ImageButton sendButton;
     private ContentObserver smsObserver;
 
-    // BroadCastReceiver override: load messages
-    private BroadcastReceiver refreshReceiver = new BroadcastReceiver() {
+    // BcReceiver to load messages
+    private BroadcastReceiver reloadReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             loadMessages(contactId);
         }
     };
 
-    // register receiver
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onStart() {
         super.onStart();
 
-        IntentFilter filter = new IntentFilter("NEW_SMS");
+        getContentResolver().registerContentObserver(android.provider.Telephony.Sms.CONTENT_URI, true, smsObserver);
 
-        getContentResolver().registerContentObserver(
-                android.provider.Telephony.Sms.CONTENT_URI,
-                true,
-                smsObserver
-        );
+        IntentFilter newSms = new IntentFilter("NEW_SMS");
 
-        // flag to trigger from SmsReceiver
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(
-                    refreshReceiver,
-                    filter,
-                    Context.RECEIVER_NOT_EXPORTED
-            );
+            registerReceiver(reloadReceiver, newSms, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            registerReceiver(refreshReceiver, filter);
+            registerReceiver(reloadReceiver, newSms);
         }
     }
 
-    // unregister receiver
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(refreshReceiver);
+        unregisterReceiver(reloadReceiver);
         getContentResolver().unregisterContentObserver(smsObserver);
     }
 
@@ -104,37 +92,23 @@ public class ContactView extends BaseActivity {
 
             // Tv set text
             text.setText(msg.getMsg());
-
             // Tv set time
             timeMillis = Long.parseLong(msg.getTimestamp());
 
-            java.text.SimpleDateFormat sdf =
-                    new java.text.SimpleDateFormat(
-                            "HH:mm",
-                            java.util.Locale.getDefault()
-                    );
-
-            String formattedTime =
-                    sdf.format(new java.util.Date(timeMillis));
-
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+            String formattedTime = sdf.format(new java.util.Date(timeMillis));
             time.setText(formattedTime);
 
-            LinearLayout container =
-                    bubble.findViewById(R.id.messageContainer);
-
-            LinearLayout.LayoutParams params =
-                    new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    );
-
+            // width and height wrap text
+            LinearLayout.LayoutParams msgPosition = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            // position
             if (msg.getIsSent() == 1) {
-                params.gravity = android.view.Gravity.END;
+                msgPosition.gravity = android.view.Gravity.END;
             } else {
-                params.gravity = android.view.Gravity.START;
+                msgPosition.gravity = android.view.Gravity.START;
             }
 
-            bubble.setLayoutParams(params);
+            bubble.setLayoutParams(msgPosition);
             board.addView(bubble);
         }
     }
@@ -142,37 +116,19 @@ public class ContactView extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_contact_view);
-
-        ViewCompat.setOnApplyWindowInsetsListener(
-                findViewById(R.id.main),
-                (v, insets) -> {
-                    Insets systemBars =
-                            insets.getInsets(
-                                    WindowInsetsCompat.Type.systemBars()
-                            );
-
-                    v.setPadding(
-                            systemBars.left,
-                            systemBars.top,
-                            systemBars.right,
-                            systemBars.bottom
-                    );
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+                    Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                     return insets;
-                }
-        );
+        });
 
         dbHelper = new DbHelper(this);
 
         contactId = getIntent().getIntExtra("contact_id", -1);
 
-        Contact contact =
-                dbHelper.getContactById(
-                        getIntent().getIntExtra("contact_id", -1)
-                );
+        Contact contact = dbHelper.getContactById(getIntent().getIntExtra("contact_id", -1));
 
         if (contact == null) {
             finish();

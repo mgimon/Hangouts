@@ -85,35 +85,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {}
-    }
-
-    /*@Override
     protected void onResume() {
         super.onResume();
 
-        contactList = dbHelper.getAllContacts();
-        emptyView = findViewById(R.id.emptyView);
-
-        if (!contactList.isEmpty()) {
-            emptyView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            adapter = new ContactAdapter(contactList);
-            recyclerView.setAdapter(adapter);
-        } else {
-            emptyView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        }
-    }*/
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        syncSmsToDb();
+        //syncSmsToDb();
 
         emptyView = findViewById(R.id.emptyView);
 
@@ -129,47 +104,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         adapter.notifyDataSetChanged();
-    }
-
-    private void syncSmsToDb() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        Cursor cursor = getContentResolver().query(
-                Uri.parse("content://sms/inbox"),
-                null,
-                null,
-                null,
-                "date DESC"
-        );
-
-        if (cursor == null) return;
-
-        while (cursor.moveToNext()) {
-
-            String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
-            String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
-            long date = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
-            String smsId = cursor.getString(cursor.getColumnIndexOrThrow("_id"));
-
-            Contact contact = dbHelper.getContactByPhone(address);
-
-            if (contact != null) {
-
-                dbHelper.insertMessage(
-                        contact.getId(),
-                        body,
-                        0,
-                        String.valueOf(date),
-                        smsId
-                );
-            }
-        }
-
-        cursor.close();
     }
 
 }
