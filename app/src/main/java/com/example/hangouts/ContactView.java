@@ -257,6 +257,22 @@ public class ContactView extends BaseActivity {
             }
         };
 
+        // send new message
+        sendButton = findViewById(R.id.sendButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                EditText messageInput = findViewById(R.id.messageInput);
+                String message = messageInput.getText().toString();
+                if (message.isEmpty())
+                    return;
+                long date = System.currentTimeMillis();
+                dbHelper.insertMessage(contactId, message, 1, String.valueOf(date), String.valueOf(date));
+                loadMessages(contactId);
+                messageInput.setText("");
+              }
+        });
+
         // handle back button of device
         getOnBackPressedDispatcher().addCallback(
                 this,

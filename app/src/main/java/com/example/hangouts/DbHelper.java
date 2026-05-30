@@ -161,12 +161,7 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(Constants.C_NOTE, note);
         contentValues.put(Constants.C_UPDATED_TIME, updatedTime);
 
-        int result = db.update(
-                Constants.CONTACT_TABLE,
-                contentValues,
-                Constants.C_ID + "=?",
-                new String[]{String.valueOf(id)}
-        );
+        int result = db.update(Constants.CONTACT_TABLE, contentValues, Constants.C_ID + "=?", new String[]{String.valueOf(id)});
 
         db.close();
         return result; // n rows affected
@@ -176,11 +171,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        int result = db.delete(
-                Constants.CONTACT_TABLE,
-                Constants.C_ID + "=?",
-                new String[]{String.valueOf(id)}
-        );
+        int result = db.delete(Constants.CONTACT_TABLE, Constants.C_ID + "=?", new String[]{String.valueOf(id)});
 
         db.close();
         return result; // n rows affected
@@ -212,11 +203,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(
-                "SELECT * FROM " + Constants.MSG_TABLE +
-                        " WHERE " + Constants.C_MSG_ID + " = ?",
-                new String[]{String.valueOf(messageId)}
-        );
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.MSG_TABLE + " WHERE " + Constants.C_MSG_ID + " = ?", new String[]{String.valueOf(messageId)});
 
         if (cursor.moveToFirst()) {
 
@@ -243,11 +230,7 @@ public class DbHelper extends SQLiteOpenHelper {
         List<Message> messageList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(
-                "SELECT * FROM " + Constants.MSG_TABLE +
-                        " WHERE " + Constants.C_MSG_CONTACT_ID + " = ?",
-                new String[]{String.valueOf(contactId)}
-        );
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.MSG_TABLE + " WHERE " + Constants.C_MSG_CONTACT_ID + " = ?", new String[]{String.valueOf(contactId)});
 
         if (cursor.moveToFirst()) {
 
