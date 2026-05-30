@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.EditText;
@@ -74,17 +75,9 @@ public class ContactView extends BaseActivity {
             View bubble;
 
             if (msg.getIsSent() == 1) {
-                bubble = inflater.inflate(
-                        R.layout.message_item_sent,
-                        board,
-                        false
-                );
+                bubble = inflater.inflate(R.layout.message_item_sent, board, false);
             } else {
-                bubble = inflater.inflate(
-                        R.layout.message_item_received,
-                        board,
-                        false
-                );
+                bubble = inflater.inflate(R.layout.message_item_received, board, false);
             }
 
             TextView text = bubble.findViewById(R.id.messageText);
@@ -94,7 +87,6 @@ public class ContactView extends BaseActivity {
             text.setText(msg.getMsg());
             // Tv set time
             timeMillis = Long.parseLong(msg.getTimestamp());
-
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
             String formattedTime = sdf.format(new java.util.Date(timeMillis));
             time.setText(formattedTime);
@@ -111,6 +103,8 @@ public class ContactView extends BaseActivity {
             bubble.setLayoutParams(msgPosition);
             board.addView(bubble);
         }
+        ScrollView scrollView = findViewById(R.id.scrollView);
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
     @Override
@@ -257,9 +251,9 @@ public class ContactView extends BaseActivity {
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
 
-                runOnUiThread(() -> {
-                    loadMessages(contactId);
-                });
+                //runOnUiThread(()
+                loadMessages(contactId);
+
             }
         };
 
