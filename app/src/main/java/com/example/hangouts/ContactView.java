@@ -200,16 +200,10 @@ public class ContactView extends BaseActivity {
                 emailInput.setHint(R.string.email);
                 emailInput.setText(contact.getEmail());
 
-                EditText noteInput =
-                        new EditText(ContactView.this);
-                noteInput.setHint(R.string.note);
-                noteInput.setText(contact.getNote());
-
                 layout.addView(nameInput);
                 layout.addView(companyInput);
                 layout.addView(phoneInput);
                 layout.addView(emailInput);
-                layout.addView(noteInput);
 
                 // popup
                 new androidx.appcompat.app.AlertDialog.Builder(
@@ -226,7 +220,7 @@ public class ContactView extends BaseActivity {
                                             companyInput.getText().toString(),
                                             phoneInput.getText().toString(),
                                             emailInput.getText().toString(),
-                                            noteInput.getText().toString(),
+                                            "",
                                             String.valueOf(
                                                     System.currentTimeMillis()
                                             )

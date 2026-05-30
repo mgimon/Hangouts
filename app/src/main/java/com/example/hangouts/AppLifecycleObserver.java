@@ -9,9 +9,9 @@ import java.util.Date;
 
 public class AppLifecycleObserver implements DefaultLifecycleObserver {
 
-    private final Hangouts app;
+    private final App app;
 
-    public AppLifecycleObserver(Hangouts app) {
+    public AppLifecycleObserver(App app) {
         this.app = app;
     }
 

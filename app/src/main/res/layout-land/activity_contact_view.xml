@@ -28,7 +28,7 @@
                 android:textSize="35sp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/futura_hf"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -43,24 +43,27 @@
                     android:text="000000000"
                     android:textSize="12sp"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_marginBottom="6dp" />
 
                 <TextView
                     android:id="@+id/contactEmail"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="email@example.com"
                     android:textSize="12sp"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_marginBottom="6dp" />
 
                 <TextView
                     android:id="@+id/contactCompany"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Company"
                     android:textSize="12sp"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -70,7 +73,22 @@
             android:layout_height="10dp"
             android:layout_weight="1.0"
             android:background="@drawable/contact_background"
-            android:padding="10dp" />
+            android:padding="10dp">
+
+            <ScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/messageBoard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </ScrollView>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,6 +97,7 @@
             android:paddingTop="10dp">
 
             <EditText
+                android:id="@+id/messageInput"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_weight="1"
@@ -86,7 +105,7 @@
                 android:padding="10dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
-                android:background="@drawable/contact_background"/>
+                android:background="@drawable/contact_background" />
 
             <ImageButton
                 android:id="@+id/sendButton"
@@ -100,7 +119,6 @@
 
     </LinearLayout>
 
-    <!-- Delete FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/editfab"
         android:layout_width="wrap_content"
@@ -110,9 +128,8 @@
         android:layout_marginEnd="60dp"
         android:src="@drawable/outline_edit_24"
         app:fabCustomSize="40dp"
-        android:backgroundTint="@color/colorSecondary"/>
+        android:backgroundTint="@color/colorSecondary" />
 
-    <!-- Delete FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/deletefab"
         android:layout_width="wrap_content"
@@ -122,6 +139,6 @@
         android:layout_marginEnd="10dp"
         android:src="@drawable/outline_delete_24"
         app:fabCustomSize="40dp"
-        android:backgroundTint="@color/colorSecondary"/>
+        android:backgroundTint="@color/colorSecondary" />
 
 </FrameLayout>

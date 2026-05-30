@@ -4,7 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-public class Hangouts extends Application {
+public class App extends Application {
 
     private long lastBackgroundTime = 0;
 
