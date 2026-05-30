@@ -1,12 +1,17 @@
 package com.example.hangouts;
 
-
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
-
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.EditText;
@@ -17,21 +22,63 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ContactView extends BaseActivity {
 
+    private int contactId;
     private DbHelper dbHelper;
     private FloatingActionButton deletefab, editfab;
     private ImageButton sendButton;
+    private ContentObserver smsObserver;
+
+    // BroadCastReceiver override: load messages
+    private BroadcastReceiver refreshReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            loadMessages(contactId);
+        }
+    };
+
+    // register receiver
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter filter = new IntentFilter("NEW_SMS");
+
+        getContentResolver().registerContentObserver(
+                android.provider.Telephony.Sms.CONTENT_URI,
+                true,
+                smsObserver
+        );
+
+        // flag to trigger from SmsReceiver
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(
+                    refreshReceiver,
+                    filter,
+                    Context.RECEIVER_NOT_EXPORTED
+            );
+        } else {
+            registerReceiver(refreshReceiver, filter);
+        }
+    }
+
+    // unregister receiver
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(refreshReceiver);
+        getContentResolver().unregisterContentObserver(smsObserver);
+    }
 
     private void loadMessages(int contactId) {
-
         LinearLayout board = findViewById(R.id.messageBoard);
         board.removeAllViews();
-        long timeMillis;
 
+        long timeMillis;
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (Message msg : dbHelper.getAllMessagesByContactId(contactId)) {
@@ -39,24 +86,42 @@ public class ContactView extends BaseActivity {
             View bubble;
 
             if (msg.getIsSent() == 1) {
-                bubble = inflater.inflate(R.layout.message_item_sent, board, false);
+                bubble = inflater.inflate(
+                        R.layout.message_item_sent,
+                        board,
+                        false
+                );
             } else {
-                bubble = inflater.inflate(R.layout.message_item_received, board, false);
+                bubble = inflater.inflate(
+                        R.layout.message_item_received,
+                        board,
+                        false
+                );
             }
-
 
             TextView text = bubble.findViewById(R.id.messageText);
             TextView time = bubble.findViewById(R.id.messageTime);
 
             // Tv set text
             text.setText(msg.getMsg());
+
             // Tv set time
             timeMillis = Long.parseLong(msg.getTimestamp());
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
-            String formattedTime = sdf.format(new java.util.Date(timeMillis));
+
+            java.text.SimpleDateFormat sdf =
+                    new java.text.SimpleDateFormat(
+                            "HH:mm",
+                            java.util.Locale.getDefault()
+                    );
+
+            String formattedTime =
+                    sdf.format(new java.util.Date(timeMillis));
+
             time.setText(formattedTime);
 
-            LinearLayout container = bubble.findViewById(R.id.messageContainer);
+            LinearLayout container =
+                    bubble.findViewById(R.id.messageContainer);
+
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -70,7 +135,6 @@ public class ContactView extends BaseActivity {
             }
 
             bubble.setLayoutParams(params);
-
             board.addView(bubble);
         }
     }
@@ -78,17 +142,38 @@ public class ContactView extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_contact_view);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+                findViewById(R.id.main),
+                (v, insets) -> {
+                    Insets systemBars =
+                            insets.getInsets(
+                                    WindowInsetsCompat.Type.systemBars()
+                            );
+
+                    v.setPadding(
+                            systemBars.left,
+                            systemBars.top,
+                            systemBars.right,
+                            systemBars.bottom
+                    );
+
+                    return insets;
+                }
+        );
 
         dbHelper = new DbHelper(this);
 
-        Contact contact = dbHelper.getContactById(getIntent().getIntExtra("contact_id", -1));
+        contactId = getIntent().getIntExtra("contact_id", -1);
+
+        Contact contact =
+                dbHelper.getContactById(
+                        getIntent().getIntExtra("contact_id", -1)
+                );
+
         if (contact == null) {
             finish();
             return;
@@ -107,54 +192,66 @@ public class ContactView extends BaseActivity {
 
         // delete fab
         deletefab = findViewById(R.id.deletefab);
+
         deletefab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //popup
-                new androidx.appcompat.app.AlertDialog.Builder(ContactView.this)
+
+                // popup
+                new androidx.appcompat.app.AlertDialog.Builder(
+                        ContactView.this
+                )
                         .setTitle(getString(R.string.delete))
                         .setMessage(getString(R.string.sure_delete))
-                        .setPositiveButton(getString(R.string.delete), (dialog, which) -> {
-
-                            // delete
-                            dbHelper.deleteContact(contact.getId());
-                            finish();
-
-                        })
-                        .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
-                            dialog.dismiss();
-                        })
+                        .setPositiveButton(
+                                getString(R.string.delete),
+                                (dialog, which) -> {
+                                    dbHelper.deleteContact(contact.getId());
+                                    finish();
+                                }
+                        )
+                        .setNegativeButton(
+                                getString(R.string.cancel),
+                                (dialog, which) -> dialog.dismiss()
+                        )
                         .show();
             }
         });
 
         // edit fab - Fragment Dialog (No Activity)
         editfab = findViewById(R.id.editfab);
+
         editfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // popup config
-                LinearLayout layout = new LinearLayout(ContactView.this);
+                LinearLayout layout =
+                        new LinearLayout(ContactView.this);
                 layout.setOrientation(LinearLayout.VERTICAL);
 
-                EditText nameInput = new EditText(ContactView.this);
+                EditText nameInput =
+                        new EditText(ContactView.this);
                 nameInput.setHint(R.string.name);
                 nameInput.setText(contact.getName());
 
-                EditText companyInput = new EditText(ContactView.this);
+                EditText companyInput =
+                        new EditText(ContactView.this);
                 companyInput.setHint(R.string.company);
                 companyInput.setText(contact.getCompany());
 
-                EditText phoneInput = new EditText(ContactView.this);
+                EditText phoneInput =
+                        new EditText(ContactView.this);
                 phoneInput.setHint(R.string.phone_number);
                 phoneInput.setText(contact.getPhone());
 
-                EditText emailInput = new EditText(ContactView.this);
+                EditText emailInput =
+                        new EditText(ContactView.this);
                 emailInput.setHint(R.string.email);
                 emailInput.setText(contact.getEmail());
 
-                EditText noteInput = new EditText(ContactView.this);
+                EditText noteInput =
+                        new EditText(ContactView.this);
                 noteInput.setHint(R.string.note);
                 noteInput.setText(contact.getNote());
 
@@ -165,38 +262,60 @@ public class ContactView extends BaseActivity {
                 layout.addView(noteInput);
 
                 // popup
-                new androidx.appcompat.app.AlertDialog.Builder(ContactView.this)
+                new androidx.appcompat.app.AlertDialog.Builder(
+                        ContactView.this
+                )
                         .setTitle(getString(R.string.edit))
                         .setView(layout)
-                        .setPositiveButton(getString(R.string.save), (dialog, which) -> {
+                        .setPositiveButton(
+                                getString(R.string.save),
+                                (dialog, which) -> {
+                                    dbHelper.updateContact(
+                                            contact.getId(),
+                                            nameInput.getText().toString(),
+                                            companyInput.getText().toString(),
+                                            phoneInput.getText().toString(),
+                                            emailInput.getText().toString(),
+                                            noteInput.getText().toString(),
+                                            String.valueOf(
+                                                    System.currentTimeMillis()
+                                            )
+                                    );
 
-                            dbHelper.updateContact(
-                                    contact.getId(),
-                                    nameInput.getText().toString(),
-                                    companyInput.getText().toString(),
-                                    phoneInput.getText().toString(),
-                                    emailInput.getText().toString(),
-                                    noteInput.getText().toString(),
-                                    String.valueOf(System.currentTimeMillis())
-                            );
-
-                            finish();
-
-                        })
-                        .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
+                                    finish();
+                                }
+                        )
+                        .setNegativeButton(
+                                getString(R.string.cancel),
+                                (dialog, which) -> dialog.dismiss()
+                        )
                         .show();
             }
         });
 
+        // load messages
         loadMessages(contact.getId());
 
-        // handle back button of device
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+        smsObserver = new ContentObserver(new android.os.Handler()) {
             @Override
-            public void handleOnBackPressed() {
-                finish(); // default behavior: close Activity
-            }
-        });
-    }
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
 
+                runOnUiThread(() -> {
+                    loadMessages(contactId);
+                });
+            }
+        };
+
+        // handle back button of device
+        getOnBackPressedDispatcher().addCallback(
+                this,
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        finish(); // default behavior: close Activity
+                    }
+                }
+        );
+    }
 }
