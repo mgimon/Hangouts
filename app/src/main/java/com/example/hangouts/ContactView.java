@@ -1,13 +1,17 @@
 package com.example.hangouts;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -18,6 +22,7 @@ import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -253,6 +258,12 @@ public class ContactView extends BaseActivity {
 
         // send new message
         sendButton = findViewById(R.id.sendButton);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 100
+            );
+        }
         sendButton.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View v) {
@@ -264,6 +275,12 @@ public class ContactView extends BaseActivity {
                 dbHelper.insertMessage(contactId, message, 1, String.valueOf(date), String.valueOf(date));
                 loadMessages(contactId);
                 messageInput.setText("");
+
+                if (ActivityCompat.checkSelfPermission(ContactView.this, Manifest.permission.SEND_SMS)
+                      == PackageManager.PERMISSION_GRANTED) {
+                  SmsManager.getDefault().sendTextMessage(contact.getPhone(), null, message, null, null);
+                }
+
               }
         });
 
@@ -278,4 +295,5 @@ public class ContactView extends BaseActivity {
                 }
         );
     }
+
 }
