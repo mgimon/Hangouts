@@ -41,7 +41,7 @@ public class ContactView extends BaseActivity {
     private BroadcastReceiver reloadReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            loadMessages(contactId);
+            runOnUiThread(() -> loadMessages(contactId));
         }
     };
 
@@ -250,8 +250,7 @@ public class ContactView extends BaseActivity {
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
 
-                //runOnUiThread(()
-                loadMessages(contactId);
+                runOnUiThread(() -> loadMessages(contactId));
 
             }
         };

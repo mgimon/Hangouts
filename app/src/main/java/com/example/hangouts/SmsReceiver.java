@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 public class SmsReceiver extends BroadcastReceiver {
 
@@ -19,31 +20,22 @@ public class SmsReceiver extends BroadcastReceiver {
         Object[] pdus = (Object[]) bundle.get("pdus");
         if (pdus == null) return;
 
-        DbHelper db = new DbHelper(context);
+        SmsReceiveModel model = new SmsReceiveModel(context);
 
         for (Object pdu : pdus) {
 
             // get sms info from pdu
-            SmsMessage sms =
-                    SmsMessage.createFromPdu((byte[]) pdu);
+            SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdu);
 
             String phone = sms.getOriginatingAddress();
             String body = sms.getMessageBody();
             long date = sms.getTimestampMillis();
 
-            Contact contact = db.getContactByPhone(phone);
+            model.handleSms(phone, body, date);
 
-            // insert in db
-            if (contact != null) {
-                db.insertMessage(
-                        contact.getId(),
-                        body,
-                        0,
-                        String.valueOf(date),
-                        String.valueOf(date)
-                );
-            }
         }
+
+        Log.d("SMS", "RECEIVER EXECUTED");
 
         // notify app
         Intent update = new Intent("NEW_SMS");
