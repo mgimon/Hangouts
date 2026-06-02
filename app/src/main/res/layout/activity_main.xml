@@ -13,8 +13,7 @@
         android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="56dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:gravity="center"
@@ -26,6 +25,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/logo42_foreground"
             android:contentDescription="42 logo"
+            android:layout_marginStart="-33dp"
             app:tint="@color/white"/>
 
         <TextView
