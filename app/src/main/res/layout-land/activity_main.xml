@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/colorSecondary" >
+
+    <!-- Header 42 -->
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-20dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@color/colorSecondary">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/logo42_foreground"
+            android:contentDescription="42 logo"
+            android:layout_marginStart="-33dp"
+            app:tint="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hangouts"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:layout_marginStart="-10dp"
+            android:fontFamily="@font/futura_hf"/>
+
+    </LinearLayout>
+
+    <!-- TextView No Contacts -->
+    <LinearLayout
+        android:id="@+id/emptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:visibility="gone"
+            android:src="@drawable/outline_account_circle_24"
+            app:tint="@color/white"
+            android:alpha="0.1"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="@string/no_contacts" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_contacts"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/futura_hf"/>
+    </LinearLayout>
+
+
+    <!-- List RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:visibility="gone"
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fab"
+        android:padding="8dp"/>
+
+    <!-- FAB button add contact -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        android:id="@+id/fab"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/baseline_add_24"
+        app:tint="@color/white"
+        android:elevation="5dp"
+
+        android:backgroundTint="@color/colorTextPrimary"
+    />
+
+
+
+</RelativeLayout>
