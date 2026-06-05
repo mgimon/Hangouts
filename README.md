@@ -6,6 +6,12 @@ This application allows users to exchange text messages, storing all data persis
 
 <br>
 
+## 🟠 Demo
+
+![hangouts](./hangouts.png)
+
+<br>
+
 ## 🟠 Technologies
 
 * Java / Kotlin
